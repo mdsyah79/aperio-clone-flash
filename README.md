@@ -20,3 +20,7 @@ Benefits of AperioUSBKit: With AperioUSBKit, the benefits are:
 With all this benefits, AperioUSBKit is a very powerful kit indeed.
 
 See a demo on youtube: https://youtu.be/bRm1tIB4tsk
+
+Screengrab of AperioUSBKit menu (version 4.5)
+![image](https://user-images.githubusercontent.com/18409384/233894201-2bd30032-dbc8-45ef-ad63-c5f2767b1eef.png)
+
