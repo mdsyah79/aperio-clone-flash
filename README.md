@@ -9,7 +9,7 @@ Benefits of AperioUSBKit: With AperioUSBKit, the benefits are:
 * AperioKITUSB is an all-in-one tool that fits in a small bag (slightly the of A5 paper but thicker).
 * Faster flashing time due to Ubuntu (linux) based software (Ubuntu on USB)
 * Faster HDD cloning using Linux-based Open-Source CloneZilla
-* With CloneZilla, multiple HDD flashing is achieveable via Clonezilla Server (host becomes a Clone Server. Clients connects to Server to be cloned)
+* With CloneZilla, multiple HDD flashing is achieveable via Clonezilla Server (host becomes a Cloned Image Server. Clients connects to Server to receive Image)
 * Another neat feature is CopyClone where a production-ready HDD is imaged and restored back to the faulty HDD without the need to re-flash, all within 1.5hours.
 * No licenses required for any software (Open Source)
 * Configurable settings via Syslinux can enable multiple feature to run pre or post CloneZilla op.
@@ -23,4 +23,37 @@ See a demo on youtube: https://youtu.be/bRm1tIB4tsk
 
 Screengrab of AperioUSBKit menu (version 4.5)
 ![image](https://user-images.githubusercontent.com/18409384/233894201-2bd30032-dbc8-45ef-ad63-c5f2767b1eef.png)
+
+Detection of USB, LVM, type of LVM amd cellnumber (Machine ID) [Example of Pre Clone Ops]
+![image](https://user-images.githubusercontent.com/18409384/233923046-0e32a017-4f7a-4827-9d32-05da260d3b6c.png)
+
+Start of HDD Restore
+![image](https://user-images.githubusercontent.com/18409384/233923887-b46d38fb-ab27-4dda-a8c7-03cbc7f8767e.png)
+
+Restoring of cellnumber to Newly Cloned HDD [Example of Post Clone Ops]
+![image](https://user-images.githubusercontent.com/18409384/233924575-f8cba770-4c8f-4c2c-a13a-2f7c0132e713.png)
+
+Multiple Clone via Server [ServerMode]
+![image](https://user-images.githubusercontent.com/18409384/233925586-753aab53-c9f9-41ee-87aa-bfb4d393258e.png)
+
+ServerMode - How it works
+![image](https://user-images.githubusercontent.com/18409384/233925956-97f0fb34-5662-4368-a493-aa11f7b8bacd.png)
+
+Selectable Cloned Images
+![image](https://user-images.githubusercontent.com/18409384/233926477-e0e504f2-0a6f-4f9c-ab68-3957999d71ec.png)
+
+ServerMode - Client side screengrab
+![image](https://user-images.githubusercontent.com/18409384/233926820-b67737db-0137-4ed2-bca5-74da358acb88.png)
+
+Aperio Flash
+![image](https://user-images.githubusercontent.com/18409384/233928199-989a1df8-6d3a-4d88-930c-4388a24e481a.png)
+
+Aperio Flash - Ubuntu Login page (Linux on USB)
+![image](https://user-images.githubusercontent.com/18409384/233928333-21354fb9-0d62-4b77-a2de-3c026b1294af.png)
+
+Altera Qartus on Ubuntu (on usb)
+![image](https://user-images.githubusercontent.com/18409384/233928851-9db012b4-747c-484b-85bc-6b83b88dc4f5.png)
+
+Flashing in progress
+![image](https://user-images.githubusercontent.com/18409384/233929057-22395f09-f050-4c04-ae1c-5ac06bfb3c68.png)
 
