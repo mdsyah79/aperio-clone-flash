@@ -1,4 +1,4 @@
-# aperio-clone-flash (aka AperioUSBKit): ULTRA-portable solution to an existing solution but WITHOUT Desktop or Laptop. AperioUSBKit is super efficient because instead it simply uses the HOST computing power to run instead and much more.
+# aperio-clone-flash (aka AperioUSBKit): ULTRA-portable (PC-less) [Seagate-Woodlands] Aperio Flashing-Cloning solution powered by Ubuntu and Clonezilla!
 
 Description of function: Aperio box is, in simple terms, a computer with high speed cards whose job is to quickly process media surface data and tag any abnormalies (e.g. types of abnormalities and location with reference to the processed media). With this data, one can plot out the processed media for analysis work to determine the quality of media without the need to complex hardware-based data collection rig, hence saving time and money.
 
