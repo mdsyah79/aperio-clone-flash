@@ -1,0 +1,204 @@
+** Aperio Recovery Tool v4.0 **
+
+-= Change Log =-
+V4.2.5	22/02/2020
+
+Found bug in ubuntu.cfg file, caused Ubuntu not to launch (extra \). Removed.
+
+Created directory "livesvr" in root to overcome the clonezilla initamfs rsync issue when using the "toram" feature.
+
+V4.2.4	29/01/2020
+
+Set sdb3 to sdb2 for "backup" images.
+
+(Todo) Improve "toram" execution. Currently created false "/live" folder to trick system to boot up due to inability for clonezilla to create nested directories via "mkdir" command in tmpfs. Proposed solution:
+	- in boot parameter, set "live-media-path=live" as the additional nested directory will be truncated in tmpfs (eg. clonezilla/live will appear as /live in tmpfs (/run/live/medium/).
+	- in boot parameter, set "toram" as "toram=clonezillasvr/live,clonezillasvr/utils,clonezillasvr/EFI,clonezillasvr/syslinux,clonezillasvr/boot,clonezillasvr/home,clonezillasvr/.disk,clonezilla/scripts" to include all base codes for full function support.
+
+(Todo) Create backup ISO of thumbdrive to be able to regenerate via Windows-based "Rufus" program.
+
+(TODO) Add script to run aperio card flashing via Aperio Box linux script (plant default startup script into fedora and run after reboot) - very chim
+
+(TODO) Clonezilla BITTORRENT/SERVER - Clonezilla Server re-numbering system to number Aperio box according to (1) Actual Tester Number ;) (2) FIFO - First AperioBox completed clone = N0. 1, 2nd Ap box completed clone = No.2, and so on...
+
+V4.2.3   27/07/2019
+
+Create 'UsbFsck' program to check Aperio USB status for (1)Dirty flag (2)"has_journal" flag (3)"journal_data_writeback".
+	If (1) flag exists, sudo e2fsck -p[auto fix]f[orce] /dev/sdb1-3 (2) exist, run "tune2fs -O ^has_journal" (3) exists run "tune2fs -o journal_data_writeback"
+
+(TODO) Add script to run aperio card flashing via Aperio Box linux script (plant default startup script into fedora and run after reboot) - very chim
+
+(TODO) Clonezilla BITTORRENT/SERVER - Clonezilla Server re-numbering system to number Aperio box according to (1) Actual Tester Number ;) (2) FIFO - First AperioBox completed clone = N0. 1, 2nd Ap box completed clone = No.2, and so on...
+
+V4.2.2   18/07/2019
+
+Replaced corrupted Portwell v8.01 image with a working copy.
+
+Clonezilla server to mount RAM DISK to unload Good Aperio HDD image to RAMDISK. This is to enable the Thumbdrive
+to be used to reboot the clients into PXE (network boot) to connect to server. Thus avoiding multiple Thumbdrives.
+
+Added Clonezilla BITTORRENT/Server 'ocs-live-feed-img' option --no-of-clients as "ask_user".
+This will prompt user to input no of users to clone. This will enable server to accurately start cloning service once correct number 
+of clients connected. If exceeded 30 minutes (due to incorrect number of clients or human error) server will still continue to run
+after 30 minutes (not applicable for BITTORRENT SERVER).
+
+Clonezilla BITTORRENT SERVER - Added warning to user to ensure HOST APERIO BOX HDD (the box in use) has a good running hdd. Else bad image will be populated.
+If Host Aperio HDD is not a good running one, user has to press NO to abort and follow the warning instructions.
+
+Added PXE Boot menu in Syslinux menu to expedite Server client boot into network
+
+Update clonezilla core to clonezilla-live-2.6.1-25-i686-pae
+
+Bug found in clonezilla server: Backup Clonerestore mode := mounted image partition only.
+Hence, pre/postrun script unable to attach to clonezilla main folder. Client will hang at startup as a result
+Solution: Mount seperately for image(home/partimag) and for clonezilla main folder (to attach scripts).
+
+(TODO) Add script to run aperio card flashing via Aperio Box linux script (plant default startup script into fedora and run after reboot) - very chim
+
+(reverted - not working) Clonezilla BITTORRENT/SERVER - changed -dm(dhcpd mode) from "auto-detect" to "start-new-dhcpd" to enable unknown Aperio box # to be numbered based on FIFO(1st cloned=1 2nd cloned=2...so on)
+
+V4.2.1   26/11/2018
+Added -fsck-src-part-y in backup menu to avoid "Source disk full issue".
+
+
+V4.2    26/11/2018
+Upgraded extlinux to ver 5.0++
+
+Added partition /dev/sdb3 (approx size 7gb on 32GB usb - 1 img roughly 3.5GB) Labelled: images .. This partition is used for CloneRestore operations so that existing contents in sdb1 is not corrupted
+
+Added these steps using Fdisk (linux) to enable USB boot from old and new bios:
+    #erase mbr
+    echo Erase mbr
+    dd if=/dev/zero of=$flash bs=1024 count=1024 -- $flash is device (eg. /dev/sdb , /dev/sdc)
+    
+    #create partition table and partition 
+echo Create partition table
+# for usb to boot in old or new bios, must ensure cylinders head=255 sectors=63 
+# bytes=512 and IMPT : BEGINNING OF PARTITION=63
+fdisk -b 512 -C $cylinders -H 255 -S 63 $flash <<EEOF
+d
+n
+p
+1
+2048
+60613182
+a
+x
+b
+63
+r
+O
+fdisklog.out
+
+w
+EEOF
+
+Added these commands as part of USB prep to improve reliability and speed of flash drive:
+    # create ext4 filesystem without journal
+     mkfs.ext4 -O ^has_journal $part  -- $part is device (eg. /dev/sdb1 , /dev/sdc1)
+
+    # give your newly formatted partition a name
+     e2label $part AperioFlash63
+
+    # Use data mode for filesystem as writeback for better performance
+     tune2fs -o journal_data_writeback $part
+
+    # Delete has_journal option
+    tune2fs -O ^has_journal $part
+
+    # Require FSCK after 10 mounts on first partition
+    tune2fs -c 10 /dev/sdb1
+    
+    Required fsck. 
+    ==============
+    e2fsck -f /dev/sdb1 
+    e2fsck -f /dev/sdb2 
+
+    # Write to disc any cache data
+    sync
+
+    # partprobe informs OS of partition changes
+    partprobe -s $part
+
+v4.1	27/02/2018
+added command HWCLOCK --systohw to RunFsck script to sync hardware clock to system clock. this is to ensure fsck run properly.
+
+removed -t (Clients dont copy mbr from image) in Clonezillasvr.cfg to avoid boot error on newly cloned hdd in clients during server mode.
+
+Tuned auto-detect-network script to detect, init and run dhclient -v on the network device in ocs-live-feed-img script.
+
+During copy-restore mode, will rum fsck and clean aperio hdd before copying automatically
+
+v4	04/01/2018
+(Experimental)Added liteserver feature to enable server based mass cloning of any image based from Clonezilla live-feed-img feature
+	- for liteserver to work must follow directory structure (clonezilla\live--as lite server only recognise \live as folder and not \live-svr) and add \live to root (STRANGE ~but TRUE)
+	- version used for lite server : clonezilla-live-2.5.4-5-i686-pae
+	- for this version, seperated in folder: clonezillasvr
+
+(Experimental)Added pre and post script run to normal clonezilla RESTORE feature to automate cellnumber.txt numbering to ori tester number. (success)
+
+(Experimental)Added pre and post script run to normal clonezilla CloneRestore feature to automate cellnumber.txt numbering to -88 when cloning and back to tester number after~clone completed (success)
+	- Autonumber will follow these guidelines when activated:
+		1) Use last 2 or 3 gigit of current IP address in use of Aperio Box
+		2) Use '88' if no IP address available (due to no network or no dhcp server online)
+
+For Advantech based RESTORE will use clonezilla ver : clonezilla-live-2.5.4-5-i686-pae (same as clonezilla lite server)
+(deferred - not implemented) For Portwell based RESTORE OR CloneRestore will user clonezilla ver : clonezilla-live-20170905-zesty-i386
+
+Folders for different clonezilla versions partitioned is the following folders:
+		- original version (clonezilla-live-2.3.2-22-i686-pae) in clonezilla\live
+		- (deferred - not implemented) i386 based version to cater for slow Portwell systems (clonezilla-live-20170905-zesty-i386) in clonezilla\live-i386
+		- latest version (includes lite-server) (clonezilla-live-2.5.4-5-i686-pae) in clonezillasvr\live
+
+Original (old) clonezilla menu moved to clonezilla\clonezillaoldver.cfg with link from main menu
+
+Added logging function. Will be save in /Logs folder in USb AND /home/aperio in HDD. Logs saved will be clonezilla.log,daemon.log,partclone.log and AperioUSBLog.log.
+
+v3.2	01/12/2017
+Added "-o noatime,nodiratime" to speedup mount performance by negating updating of "access time to file and/or directory changes
+Added "rm -rvf /home/partimag/" to clonerestore to delete existing image to reduce storage space used
+
+v3.1	01/11/2017
+Added POrtwell ver 11.3 hdd img to clonezilla
+cell7 USB image used as base image
+
+v3.0   26/11/2013 
+
+v2.5.1   15/01/2014 
+Updated Clonezilla live v2.2.1-25.
+
+v2.5.1   26/11/2013 
+Updated Clonezilla live v2.2.0-31.
+
+v2.5.0   22/11/2013 
+Revamp the menu selection & appearance.
+Password protect the menu "More Tools".
+
+v2.4.1   19/11/2013 
+Updated Clonezilla live v2.2.0-29.
+
+v2.4.0   14/11/2013 
+Added "More Tools" menu for technical administration. 
+
+v2.2.3   01/11/2013 
+GZip files in folder "tools" & "moretools" to reduce space used.
+
+v2.2.2   31/10/2013 
+Updated Clonezilla live v2.2.0-16.
+
+v2.2.1   22/10/2013 
+Updated Memtest86+ v5.01 
+
+v2.2.0   18/10/2013 
+file system EXT2 & EXT3 partitions replaced with EXT4 with journal disabled, 
+faster file access & prolong Flash disk life span.
+
+v2.1.1   01/08/2013 
+Updated Memtest86+ v4.20 
+
+v2.1.0   09/07/2013 
+Added Seagate SeaTools for DOS v2.23(Graphical)
+Added Memtest86+ v4.10 
+
+v1.0   20/06/2011 
+Initial release Aperio Recovery Tool. 
